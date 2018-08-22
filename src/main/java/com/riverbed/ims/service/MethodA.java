@@ -1,4 +1,3 @@
-
 package com.riverbed.ims.service;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -9,14 +8,18 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.Random;
 
+import com.riverbed.ims.model.Result;
+
 @Component
 public class MethodA {
 
 	private final Log logger = LogFactory.getLog(this.getClass());
 
+	private Result result = new Result();
+
 	private Random rng = new Random();
 
-	public String process(Integer mode, Integer min, Integer max) {
+	public Result process(Integer mode, Integer min, Integer max) {
 		Integer number = rng.nextInt((max - min) + 1) + min;
 
 		if (mode == 1) {
@@ -24,11 +27,12 @@ public class MethodA {
 		} else if (mode == 2) {
 			return sleepLoad(number, 0.5);
 		} else {
-			return "Nothing....";
+			this.result.setType("Undifined");
+			return this.result;
 		}
 	}
 
-	private String cpuSpin(Integer number) {
+	private Result cpuSpin(Integer number) {
 		long startTime = System.currentTimeMillis();
 
 		for (int i = 0; i < (number*100); i++){
@@ -36,14 +40,15 @@ public class MethodA {
 			double v = Math.sin(Math.cos(Math.sin(Math.cos(r))));
 		}
 
-		long runTime = System.currentTimeMillis() - startTime;
+		this.result.setType(Thread.currentThread().getStackTrace()[1].getMethodName());
+		this.result.setActualRuntime(System.currentTimeMillis() - startTime);
+		this.result.setIterations(number);
 
-		logger.debug(String.format("Called cpuSpin: The number of itterations was: %d The run time was:%dms", number, runTime));
-
-		return "----";
+		logger.debug(String.format("Called %s: The number of itterations was: %d The run time was:%dms", this.result.getType(), this.result.getIterations(), this.result.getActualRuntime()));
+		return this.result;
 	}
 
-	private String sleepLoad(Integer duration, double load) {
+	private Result sleepLoad(Integer duration, double load) {
 		long startTime = System.currentTimeMillis();
 		try {
 			// Loop for the given duration
@@ -57,10 +62,12 @@ public class MethodA {
 			e.printStackTrace();
 		}
 
-		long runTime = System.currentTimeMillis() - startTime;
+		this.result.setType(Thread.currentThread().getStackTrace()[1].getMethodName());
+		this.result.setActualRuntime(System.currentTimeMillis() - startTime);
+		this.result.setDuration(duration);
+		this.result.setLoad(load);
 
-		logger.debug(String.format("Called sleepLoad: The duration was: %dms The run time was:%dms", duration, runTime));
-
-		return "+++++";
+		logger.debug(String.format("Called %s: The duration was: %dms with a load off: %.2f The run time was:%dms", this.result.getType(), this.result.getDuration(), this.result.getLoad(), this.result.getActualRuntime()));
+		return this.result;
 	}
 }

@@ -1,12 +1,14 @@
 package com.riverbed.ims.web;
 
+import java.util.List;
 import java.util.LinkedHashMap;
+import java.util.ArrayList;
 
 import com.riverbed.ims.service.MethodA;
 import com.riverbed.ims.model.Tier;
 import com.riverbed.ims.model.Method;
+import com.riverbed.ims.model.Result;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,9 +27,6 @@ import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 @RestController
 public class ImsController {
 
-	//@Autowired
-	//private MethodA methodA;
-
 	private static Log logger = LogFactory.getLog(ImsController.class);
 
 	private RestTemplate restTemplate = new RestTemplate();
@@ -43,8 +42,10 @@ public class ImsController {
 
 	@PostMapping("/**")
 	@ResponseBody
-	public String processTier(@RequestBody Tier thisTier, final HttpServletRequest request) throws Exception {
+	public List<Result> processTier(@RequestBody Tier thisTier, final HttpServletRequest request) throws Exception {
 		logger.info(String.format("Got request for: %s\n%s", request.getRequestURI(), thisTier));
+
+		List<Result> result = new ArrayList<Result>();;
 
 		for (Method method : thisTier.getMethod()) {
 			Integer mode = method.getMode();
@@ -60,8 +61,8 @@ public class ImsController {
 				.newInstance();
 
 			logger.debug(String.format("Calling method... Name:%s Mode:%d Min:%d Max:%d", thisMethodA.getClass().getName(), mode, min, max));
-			String output = thisMethodA.process(mode, min, max);
-			logger.debug(output);
+			result.add(thisMethodA.process(mode, min, max));
+			logger.debug(result);
 		}
 
 		if (thisTier.getCall() != null){
@@ -76,6 +77,6 @@ public class ImsController {
 		}
 
 		//return String.format("Done! Response:\n%s", response);
-		return "Done!";
+		return result;
 	}
 }
