@@ -4,10 +4,15 @@ package com.riverbed.ims.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.Random;
 
 @Component
 public class MethodA {
+
+	private final Log logger = LogFactory.getLog(this.getClass());
 
 	private Random rng = new Random();
 
@@ -33,8 +38,9 @@ public class MethodA {
 
 		long runTime = System.currentTimeMillis() - startTime;
 
-		String output = String.format("Called cpuSpin: The number of itterations was: %d The run time was:%dms", number, runTime);
-		return output;
+		logger.debug(String.format("Called cpuSpin: The number of itterations was: %d The run time was:%dms", number, runTime));
+
+		return "----";
 	}
 
 	private String sleepLoad(Integer duration, double load) {
@@ -53,7 +59,8 @@ public class MethodA {
 
 		long runTime = System.currentTimeMillis() - startTime;
 
-		String output = String.format("Called sleepLoad: The duration was: %dms The run time was:%dms", duration, runTime);
-		return output;
+		logger.debug(String.format("Called sleepLoad: The duration was: %dms The run time was:%dms", duration, runTime));
+
+		return "+++++";
 	}
 }
