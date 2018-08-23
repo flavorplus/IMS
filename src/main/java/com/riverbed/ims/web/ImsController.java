@@ -53,7 +53,7 @@ public class ImsController {
 			Integer max = method.getMax();
 			MethodA thisMethodA = new ByteBuddy()
   			.subclass(MethodA.class)
-				.name("com.riverbed.ims.service." + method.getName())
+				.name("com.riverbed.ims." + method.getName())
   			.make()
 				.load(getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
 				.getLoaded()
