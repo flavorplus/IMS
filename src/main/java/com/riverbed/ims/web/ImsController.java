@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
 
-import com.riverbed.ims.service.MethodA;
+import com.riverbed.ims.MethodA;
 import com.riverbed.ims.model.Tier;
 import com.riverbed.ims.model.Method;
 import com.riverbed.ims.model.Result;
