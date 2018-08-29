@@ -43,7 +43,7 @@ public class ImsController {
 	@PostMapping("/**")
 	@ResponseBody
 	public List<Result> processTier(@RequestBody Tier thisTier, final HttpServletRequest request) throws Exception {
-		logger.info(String.format("Got request for: %s\n%s", request.getRequestURI(), thisTier));
+		logger.debug(String.format("Got request for: %s\n%s", request.getRequestURI(), thisTier));
 
 		List<Result> result = new ArrayList<Result>();;
 
@@ -67,13 +67,13 @@ public class ImsController {
 
 		if (thisTier.getCall() != null){
 			for (LinkedHashMap call : thisTier.getCall()){
-				logger.info(String.format("Making request to: %s", call.get("url")));
+				logger.debug(String.format("Making request to: %s", call.get("url")));
 				logger.debug(String.format("with body:\n%s", call));
 				String response = restTemplate.postForObject(call.get("url").toString(), call, String.class);
 				logger.info(response);
 			}
 		} else{
-			logger.info("No external calls to make...");
+			logger.debug("No external calls to make...");
 		}
 
 		//return String.format("Done! Response:\n%s", response);
