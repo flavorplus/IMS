@@ -51,6 +51,7 @@ public class ImsController {
 			Integer mode = method.getMode();
 			Integer min = method.getMin();
 			Integer max = method.getMax();
+			String message = method.getMessage();
 			MethodA thisMethodA = new ByteBuddy()
   			.subclass(MethodA.class)
 				.name("com.riverbed.ims." + method.getName())
@@ -61,7 +62,7 @@ public class ImsController {
 				.newInstance();
 
 			logger.debug(String.format("Calling method... Name:%s Mode:%d Min:%d Max:%d", thisMethodA.getClass().getName(), mode, min, max));
-			result.add(thisMethodA.process(mode, min, max));
+			result.add(thisMethodA.process(mode, min, max, message));
 			logger.debug(result);
 		}
 

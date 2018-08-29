@@ -19,8 +19,12 @@ public class MethodA {
 
 	private Random rng = new Random();
 
-	public Result process(Integer mode, Integer min, Integer max) {
+	public Result process(Integer mode, Integer min, Integer max, String message) {
 		Integer number = rng.nextInt((max - min) + 1) + min;
+
+		if (message != null) {
+			logger.info(message);
+		}
 
 		if (mode == 1) {
 			return cpuSpin(number);
