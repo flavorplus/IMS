@@ -5,10 +5,11 @@ import lombok.Data;
 import lombok.ToString;
 
 @Data
-public class Result {
+public class MethodResult {
   private String type;
   private long actualRuntime;
   private Integer iterations;
   private Integer duration;
   private double load;
+  private byte[] payload;
 }

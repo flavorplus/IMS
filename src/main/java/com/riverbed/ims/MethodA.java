@@ -8,18 +8,18 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.Random;
 
-import com.riverbed.ims.model.Result;
+import com.riverbed.ims.model.MethodResult;
 
 @Component
 public class MethodA {
 
 	private final Log logger = LogFactory.getLog(this.getClass());
 
-	private Result result = new Result();
+	private MethodResult result = new MethodResult();
 
 	private Random rng = new Random();
 
-	public Result process(Integer mode, Integer min, Integer max, String message) {
+	public MethodResult process(Integer mode, Integer min, Integer max, String message) {
 		Integer number = rng.nextInt((max - min) + 1) + min;
 
 		if (message != null) {
@@ -27,16 +27,21 @@ public class MethodA {
 		}
 
 		if (mode == 1) {
-			return cpuSpin(number);
+			cpuSpin(number);
+			return this.result;
 		} else if (mode == 2) {
-			return sleepLoad(number, 0.5);
-		} else {
+			sleepLoad(number, 0.5);
+			return this.result;
+		} else if (mode == 3) {
+			generateData(number);
+			return this.result;
+		}else {
 			this.result.setType("Undifined");
 			return this.result;
 		}
 	}
 
-	private Result cpuSpin(Integer number) {
+	private void cpuSpin(Integer number) {
 		long startTime = System.currentTimeMillis();
 
 		for (int i = 0; i < (number*100); i++){
@@ -49,10 +54,10 @@ public class MethodA {
 		this.result.setIterations(number);
 
 		logger.debug(String.format("Called %s: The number of itterations was: %d The run time was:%dms", this.result.getType(), this.result.getIterations(), this.result.getActualRuntime()));
-		return this.result;
+		return;
 	}
 
-	private Result sleepLoad(Integer duration, double load) {
+	private void sleepLoad(Integer duration, double load) {
 		long startTime = System.currentTimeMillis();
 		try {
 			// Loop for the given duration
@@ -72,6 +77,19 @@ public class MethodA {
 		this.result.setLoad(load);
 
 		logger.debug(String.format("Called %s: The duration was: %dms with a load off: %.2f The run time was:%dms", this.result.getType(), this.result.getDuration(), this.result.getLoad(), this.result.getActualRuntime()));
-		return this.result;
+		return;
+	}
+
+	private void generateData(Integer amount) {
+		long startTime = System.currentTimeMillis();
+		byte[] buffer = new byte[amount];
+		rng.nextBytes(buffer);
+		this.result.setPayload(buffer);
+		this.result.setLoad(amount);
+		this.result.setType(Thread.currentThread().getStackTrace()[1].getMethodName());
+		this.result.setActualRuntime(System.currentTimeMillis() - startTime);
+
+		logger.debug(String.format("Called %s: The run time was: %dms The amount of data created was:%d", this.result.getType(), this.result.getActualRuntime(), this.result.getPayload().length));
+		return;
 	}
 }

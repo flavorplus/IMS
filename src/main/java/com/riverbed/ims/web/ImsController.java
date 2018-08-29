@@ -2,12 +2,12 @@ package com.riverbed.ims.web;
 
 import java.util.List;
 import java.util.LinkedHashMap;
-import java.util.ArrayList;
 
 import com.riverbed.ims.MethodA;
 import com.riverbed.ims.model.Tier;
 import com.riverbed.ims.model.Method;
-import com.riverbed.ims.model.Result;
+import com.riverbed.ims.model.MethodResult;
+import com.riverbed.ims.model.CallResult;;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,10 +42,10 @@ public class ImsController {
 
 	@PostMapping("/**")
 	@ResponseBody
-	public List<Result> processTier(@RequestBody Tier thisTier, final HttpServletRequest request) throws Exception {
+	public CallResult processTier(@RequestBody Tier thisTier, final HttpServletRequest request) throws Exception {
 		logger.debug(String.format("Got request for: %s\n%s", request.getRequestURI(), thisTier));
 
-		List<Result> result = new ArrayList<Result>();;
+		CallResult callResult = new CallResult();
 
 		for (Method method : thisTier.getMethod()) {
 			Integer mode = method.getMode();
@@ -62,22 +62,19 @@ public class ImsController {
 				.newInstance();
 
 			logger.debug(String.format("Calling method... Name:%s Mode:%d Min:%d Max:%d", thisMethodA.getClass().getName(), mode, min, max));
-			result.add(thisMethodA.process(mode, min, max, message));
-			logger.debug(result);
+			callResult.addResult(thisMethodA.process(mode, min, max, message));
 		}
 
 		if (thisTier.getCall() != null){
 			for (LinkedHashMap call : thisTier.getCall()){
-				logger.debug(String.format("Making request to: %s", call.get("url")));
-				logger.debug(String.format("with body:\n%s", call));
-				String response = restTemplate.postForObject(call.get("url").toString(), call, String.class);
-				logger.info(response);
+				logger.debug(String.format("Making request to: %s with body:\n%s", call.get("url"), call));
+				callResult.setCall(restTemplate.postForObject(call.get("url").toString(), call, Object.class));
+				logger.info(String.format("Result: %s", restTemplate.postForObject(call.get("url").toString(), call, Object.class)));
 			}
 		} else{
 			logger.debug("No external calls to make...");
 		}
 
-		//return String.format("Done! Response:\n%s", response);
-		return result;
+		return callResult;
 	}
 }
