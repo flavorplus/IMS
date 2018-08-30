@@ -69,7 +69,7 @@ public class ImsController {
 			for (LinkedHashMap call : thisTier.getCall()){
 				logger.debug(String.format("Making request to: %s with body:\n%s", call.get("url"), call));
 				callResult.setCall(restTemplate.postForObject(call.get("url").toString(), call, Object.class));
-				logger.info(String.format("Result: %s", restTemplate.postForObject(call.get("url").toString(), call, Object.class)));
+				logger.debug(String.format("Result: %s", restTemplate.postForObject(call.get("url").toString(), call, Object.class)));
 			}
 		} else{
 			logger.debug("No external calls to make...");
