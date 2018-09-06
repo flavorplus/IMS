@@ -54,8 +54,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-    	<groupId>net.bytebuddy</groupId>
-    	<artifactId>byte-buddy</artifactId>
+    		<groupId>net.bytebuddy</groupId>
+    		<artifactId>byte-buddy</artifactId>
+		</dependency>
+		<dependency> 
+    		<groupId>org.springframework.boot</groupId> 
+    		<artifactId>spring-boot-starter-thymeleaf</artifactId> 
 		</dependency>
 	</dependencies>
 
