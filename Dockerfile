@@ -6,7 +6,7 @@ RUN mvn dependency:go-offline
 
 FROM maven:3.5.4-jdk-10-slim
 
-MAINTAINER Jonathan Vermeulen
+LABEL maintainer="Jonathan Vermeulen"
 
 COPY --from=intermediate /root/.m2 /root/.m2
 

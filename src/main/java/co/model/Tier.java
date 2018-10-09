@@ -1,4 +1,4 @@
-package com.riverbed.ims.model;
+package co.model;
 
 import java.util.List;
 import java.util.LinkedHashMap;
@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.Data;
 import lombok.ToString;
 
-import com.riverbed.ims.model.Method;
+import co.model.Method;
 
 @Data
 public class Tier {

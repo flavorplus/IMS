@@ -1,13 +1,14 @@
-package com.riverbed.ims.web;
+package co.web;
 
 import java.util.List;
 import java.util.LinkedHashMap;
 
-import com.riverbed.ims.MethodA;
-import com.riverbed.ims.model.Tier;
-import com.riverbed.ims.model.Method;
-import com.riverbed.ims.model.MethodResult;
-import com.riverbed.ims.model.CallResult;;
+import co.MethodA;
+import co.model.Tier;
+import co.model.Method;
+import co.model.MethodResult;
+import co.model.CallResult;
+import co.service.HandleDb;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,12 +33,20 @@ public class ImsController {
 
 	private RestTemplate restTemplate = new RestTemplate();
 
+	private HandleDb handleDb = new HandleDb();
+
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	@ResponseBody
+	public String testDb() {
+		return handleDb.execute("bla", 70);
+	}
+
 	@RequestMapping(value = "/**", method = RequestMethod.GET)
 	public String generateLoad() {
 		return "intro";
 	}
 
-	@RequestMapping(value = "/**", method = RequestMethod.POST, headers = "html=yes" ,consumes = {
+	@RequestMapping(value = "/**", method = RequestMethod.POST, headers = "x-Html=yes" ,consumes = {
         "application/JSON",
         "application/XML"
     })
@@ -53,7 +62,7 @@ public class ImsController {
 			String message = method.getMessage();
 			MethodA thisMethodA = new ByteBuddy()
   			.subclass(MethodA.class)
-				.name("com.riverbed.ims." + method.getName())
+				.name("co." + method.getName())
   			.make()
 				.load(getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
 				.getLoaded()
@@ -94,7 +103,7 @@ public class ImsController {
 			String message = method.getMessage();
 			MethodA thisMethodA = new ByteBuddy()
   			.subclass(MethodA.class)
-				.name("com.riverbed.ims." + method.getName())
+				.name("co." + method.getName())
   			.make()
 				.load(getClass().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
 				.getLoaded()

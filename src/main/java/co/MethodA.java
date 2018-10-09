@@ -1,19 +1,25 @@
-package com.riverbed.ims;
+package co;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import javax.persistence.PersistenceContext;
+import javax.persistence.ParameterMode;
+import javax.persistence.EntityManager;
+import javax.persistence.StoredProcedureQuery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.Random;
 
-import com.riverbed.ims.model.MethodResult;
+import co.model.MethodResult;
+import co.service.HandleDb;
 
-@Component
+@Service
 public class MethodA {
 
 	private final Log logger = LogFactory.getLog(this.getClass());
+
+	private HandleDb handleDb = new HandleDb();
 
 	private MethodResult result = new MethodResult();
 
@@ -35,7 +41,10 @@ public class MethodA {
 		} else if (mode == 3) {
 			generateData(number);
 			return this.result;
-		}else {
+		} else if (mode == 4) {
+			sqlSleep(number);
+			return this.result;
+		} else {
 			this.result.setType("Undifined");
 			return this.result;
 		}
@@ -90,6 +99,18 @@ public class MethodA {
 		this.result.setActualRuntime(System.currentTimeMillis() - startTime);
 
 		logger.debug(String.format("Called %s: The run time was: %dms The amount of data created was:%d", this.result.getType(), this.result.getActualRuntime(), this.result.getPayload().length));
+		return;
+	}
+
+	private void sqlSleep(Integer number) {
+		long startTime = System.currentTimeMillis();
+
+		logger.debug(handleDb.execute("bla", number));
+
+		this.result.setType(Thread.currentThread().getStackTrace()[1].getMethodName());
+		this.result.setActualRuntime(System.currentTimeMillis() - startTime);
+
+		logger.debug(String.format("Called %s: The run time was: %dms", this.result.getType(), this.result.getActualRuntime()));
 		return;
 	}
 }

@@ -1,4 +1,4 @@
-package com.riverbed.ims.model;
+package co.model;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import lombok.Setter;
 import lombok.Data;
 import lombok.ToString;
 
-import com.riverbed.ims.model.MethodResult;
+import co.model.MethodResult;
 
 @Data
 public class CallResult {

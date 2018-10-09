@@ -1,4 +1,4 @@
-package com.riverbed.ims.model;
+package co.model;
 
 import lombok.Setter;
 import lombok.Data;
